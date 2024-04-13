@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -34,11 +35,9 @@ class Console{
         System.out.println("Для начала мне нужно знать сколько человек в компании.");
         while(true){
             System.out.println("Введи сколько вас собралось: ");
-            if(!scanner.hasNextInt()){
-                System.out.println("Попробуй ввести число");
-            }
-            else {
-                countHuman = scanner.nextInt();
+            String isCount = scanner.next();
+            try {
+                countHuman = Integer.parseInt(isCount);
                 if(countHuman<1){
                     System.out.println("Попробуй пересчитать");
                 }
@@ -50,6 +49,9 @@ class Console{
                 else {
                     System.out.println("Похоже, что твои друзья не смогли сегодня прийти. Придётся самому за всё платить\n Возможно ты забыл про кого-то попробуй пересчитать");
                 }
+            }
+            catch (NumberFormatException ime){
+                System.out.println("Попробуй ввести число");
             }
         }
 
@@ -73,29 +75,41 @@ class Calculator{
     }
     static void chooseProduct() {
         String name = "start";
+        System.out.println("Если у цены товара есть дробная часть отдели её символом '.' Например: '1.45'");
         while (!name.equalsIgnoreCase("Завершить")){
             System.out.println("Введи название товара: ");
             name = new String(scanner.next());
             if(name.equalsIgnoreCase("Завершить")){
                 break;
             }
-            System.out.println("Введи цену на товар: ");
-            if(!scanner.hasNextDouble()){
-                System.out.println("Попробуй ввести товар заного");
-            }
-            else{
-                double price = scanner.nextDouble();
-                if (price>0){
-                    listProduct.add(new Product(name, price));
-                    System.out.println("Товар добавлен");
+
+            while(true){
+                System.out.println("Введи цену на товар: ");
+                String isPrice = scanner.next();
+                try {
+                    double price = Double.parseDouble(isPrice);
+                    if (price > 0) {
+                        listProduct.add(new Product(name, price));
+                        System.out.println("Товар добавлен");
+                        break;
+                    }
+                    else {
+                        System.out.println("Кажется ты что-то перепутал. Цена не может быть отрицательной попробуй ввести её ещё раз");
+                    }
                 }
-                else {
-                    System.out.println("Попробуй ввести товар заного");
+                catch (NumberFormatException ime){
+                    System.out.println("Попробуй ввести цену на товар заного, согласно требованиям");
                 }
             }
         }
         scanner.close();
-        System.out.println(calculate(humans));
+        String prod;
+        System.out.println("Добавленные товары: ");
+        for(Product product: listProduct){
+            prod = product.getName()+" - "+String.format("%.2f", product.getPrice())+Formater.formater(product.getPrice());
+            System.out.println(prod);
+        }
+        System.out.println("Итого с каждого по: "+ String.format("%.2f",calculate(humans))+Formater.formater(calculate(humans)));
     }
     static double calculate(int humans){
         double sum = 0;
@@ -105,4 +119,20 @@ class Calculator{
         return sum/humans;
     }
 
+
+}
+class Formater{
+
+    static String formater(double price){
+        int priceRound = (int) Math.floor(price);
+        if(priceRound%10==1 && priceRound/10!=1 || priceRound == 1){
+            return " рубль";
+        }
+        else if(priceRound%10>1 && priceRound%10<5 && priceRound/10!=1 || priceRound>1 && priceRound<5){
+            return " рубля";
+        }
+        else{
+            return "рублей";
+        }
+    }
 }
