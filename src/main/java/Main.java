@@ -47,7 +47,8 @@ class Console{
                     break;
                 }
                 else {
-                    System.out.println("Похоже, что твои друзья не смогли сегодня прийти. Придётся самому за всё платить\n Возможно ты забыл про кого-то попробуй пересчитать");
+                    System.out.println("Похоже, что твои друзья не смогли сегодня прийти. Придётся самому за всё платить");
+                    break;
                 }
             }
             catch (NumberFormatException ime){
@@ -57,12 +58,7 @@ class Console{
 
 
     }
-    public static void setHumans(){
-        System.out.println(getHuman(countHuman));
-    }
-    public static int getHuman(int countHuman){
-        return countHuman;
-    }
+
 }
 class Calculator{
     static private int humans;
